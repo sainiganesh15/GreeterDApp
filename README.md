@@ -1,70 +1,99 @@
-# Getting Started with Create React App
+# Greeter DApp
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project contains a decentralized application (DApp) that interacts with a smart contract deployed on the Ethereum blockchain. The DApp allows users to view and change the greeting message stored in the smart contract.
 
-## Available Scripts
+## Prerequisites
 
-In the project directory, you can run:
+Before running the DApp, make sure you have the following installed on your system:
 
-### `npm start`
+- Node.js
+- npm or yarn
+- Ganache or any other local Ethereum development blockchain
+- Metamask browser extension
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Installation
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+1. Install `create-react-app` and `hardhat` by running the following command in your terminal:
+``` 
+npm install -g create-react-app
+npm install hardhat
+```
+2. Create a new React app and initialize Hardhat with the basic sample project by running:
+``` 
+npx create-react-app my-app
+cd my-app
+npx hardhat
+```
+3. For running hardhat sample project install these dependencies:
+```
+npm install --save-dev @nomiclabs/hardhat-ethers@^2.0.5 @nomiclabs/hardhat-waffle@^2.0.3 
+npm install --save-dev chai@^4.3.6 ethereum-waffle@^3.4.4 ethers@^5.6.2 hardhat@^2.9.2
+```
+This will create a new React app in a folder named my-app and initialize a new Hardhat project with the basic sample project.
 
-### `npm test`
+## Deploying Smart Contract to Localhost
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. Write your smart contract in Solidity and save it in the `contracts/` folder.
 
-### `npm run build`
+2. In the `hardhat.config.js` file, configure your local development network by adding the following:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```
+require("@nomiclabs/hardhat-waffle")
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+module.exports = {
+    solidity: "0.8.9",
+    networks: {
+      hardhat: {
+        chainId: 1337,
+      },
+    },
+    paths: {
+      artifacts: "./src/artifacts",
+    },
+  };
+  ```
 
-### `npm run eject`
+  3. In the `scripts/` folder, create a new script to deploy your contract to the local network:
+  ```
+  const { ethers } = require("hardhat");
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+async function main() {
+  const Greeter = await ethers.getContractFactory("Greeter");
+  const greeter = await Greeter.deploy("Hello, Hardhat!");
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+  console.log("Greeter deployed to:", greeter.address);
+}
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+main()
+  .then(() => process.exit(0))
+  .catch(error => {
+    console.error(error);
+    process.exit(1);
+  });
+```
+4. Compile and deploy the smart contract using Hardhat
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```
+npx hardhat compile
+npx hardhat run scripts/deploy.js --network localhost
 
-## Learn More
+``` 
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+This will deploy your smart contract to the local development network.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+5. Start the DApp server
+`npm start
+`
 
-### Code Splitting
+6. Open your web browser and navigate to http://localhost:3000.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## Usage
 
-### Analyzing the Bundle Size
+- On the home page of the DApp, you can view the current greeting message stored in the smart contract.
+- To change the greeting, enter a new message in the input field and click the "Change" button.
+- The greeting message will be updated in the smart contract and the page will be refreshed to display the new message.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## License
 
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+This project is licensed under the MIT License
